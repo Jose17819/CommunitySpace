@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace libServicios.Modelos
 {
     public class CanchaBaloncesto
     {
+
+        [Key]
         public int IdCanchaBaloncesto { get; set; }
         public int IdZonaComun { get; set; }
         public int TiempoMaximoUso { get; set; }
@@ -17,6 +20,8 @@ namespace libServicios.Modelos
         public bool EsTechada { get; set; }
         public int NumeroAros { get; set; }
 
-        [ForeignKey("IdZonaComun")] public ZonaComun? _ZonaComun { get; set; }
+        [ForeignKey("IdZonaComun")] public ZonasComunes? _ZonasComunes { get; set; }
+
+
     }
 }

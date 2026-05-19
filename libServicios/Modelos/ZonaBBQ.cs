@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace libServicios.Modelos
 {
     public class ZonaBBQ
     {
+
+        [Key]
         public int IdZonaBBQ { get; set; }
         public int IdZonaComun { get; set; }
         public string? NumeroParrillas { get; set; }
@@ -16,6 +19,7 @@ namespace libServicios.Modelos
         public int CantidadDeUtensilios { get; set; }
         public bool CarbonIncluido { get; set; }
 
-        [ForeignKey("IdZonaComun")] public ZonaComun? _ZonaComun { get; set; }
+        [ForeignKey("IdZonaComun")] public ZonasComunes? _ZonasComunes { get; set; }
+
     }
 }

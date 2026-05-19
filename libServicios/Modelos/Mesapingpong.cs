@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace libServicios.Modelos
 {
     public class MesaPingPong
     {
+
+        [Key]
         public int IdMesaPingPong { get; set; }
         public int IdZonaComun { get; set; }
         public string? NumeroDeMesa { get; set; }
@@ -17,6 +20,8 @@ namespace libServicios.Modelos
         public bool RedesIncluidas { get; set; }
         public string? Ubicacion { get; set; }
 
-        [ForeignKey("IdZonaComun")] public ZonaComun? _ZonaComun { get; set; }
+        [ForeignKey("IdZonaComun")] public ZonasComunes? _ZonasComunes { get; set; }
+
+
     }
 }
