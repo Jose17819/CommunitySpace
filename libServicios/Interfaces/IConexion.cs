@@ -13,7 +13,7 @@ namespace libServicios.Interfaces
         string? string_conexion { get; set; }
 
         DbSet<Usuarios>? Usuarios { get; set; }
-        DbSet<Administradores>? Administrador { get; set; }
+        DbSet<Administradores>? Administradores { get; set; }
         DbSet<Apartamentos>? Apartamentos { get; set; }
         DbSet<Residentes>? Residentes { get; set; }
         DbSet<ResidentesApartamentos>? ResidentesApartamentos { get; set; }

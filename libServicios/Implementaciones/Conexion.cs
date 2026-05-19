@@ -22,7 +22,7 @@ namespace libServicios.Implementaciones
 
 
         public DbSet<Usuarios>? Usuarios { get; set; }
-        public DbSet<Administradores>? Administrador { get; set; }
+        public DbSet<Administradores>? Administradores { get; set; }
         public DbSet<Apartamentos>? Apartamentos { get; set; }
         public DbSet<Residentes>? Residentes { get; set; }
         public DbSet<ResidentesApartamentos>? ResidentesApartamentos { get; set; }
