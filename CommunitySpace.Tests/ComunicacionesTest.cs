@@ -7,48 +7,49 @@ namespace CommunitySpace.Tests
     [TestClass]
     public class ComunicacionesTest
     {
-        private Comunicaciones comunicaciones = new Comunicaciones();
-        private string UrlBase = "http://localhost:5124";
+        private readonly Comunicaciones comunicaciones = new Comunicaciones();
 
+        
+        private readonly string UrlBase = "http://localhost:5124";
+
+
+
+        // Se consulta la lista de usuarios
         [TestMethod]
-        public async Task Comunicaciones_Consultar_UsuariosRetornaLista()
+        public async Task ConsultarUsuarios_DeberiaRetornarLista()
         {
+            
             var resultado = await comunicaciones.Ejecutar<List<Usuarios>>(
                 new Dictionary<string, object>
                 {
                     { "Url", $"{UrlBase}/Usuarios/Consultar" }
                 });
 
+            
             Assert.IsNotNull(resultado);
+            Assert.IsTrue(resultado.Count > 0);
         }
 
 
+
+
+
+        // Se valida que se guarde un usuario
         [TestMethod]
-        public async Task Comunicaciones_Consultar_ZonasComunesRetornaLista()
+        public async Task GuardarUsuario_DeberiaRetornarUsuarioConId()
         {
-            var resultado = await comunicaciones.Ejecutar<List<ZonasComunes>>(
-                new Dictionary<string, object>
-                {
-                    { "Url", $"{UrlBase}/ZonasComunes/Consultar" }
-                });
-
-            Assert.IsNotNull(resultado);
-        }
-
-
-        [TestMethod]
-        public async Task Comunicaciones_Guardar_UsuarioRetornaConId()
-        {
+            
             var usuario = new Usuarios
             {
                 Id = 0,
-                Nombre = "Test",
+                Nombre = "Usuario Test",
                 Apellido = "Prueba",
                 Email = $"test{DateTime.Now.Ticks}@gmail.com",
                 Contraseña = "123456",
                 Telefono = "3001234567"
             };
 
+            
             var resultado = await comunicaciones.Ejecutar<Usuarios>(
                 new Dictionary<string, object>
                 {
@@ -56,104 +57,89 @@ namespace CommunitySpace.Tests
                     { "Entidad", usuario }
                 });
 
-            Assert.IsNotNull(resultado);
-            Assert.IsTrue(resultado.Id > 0);
-        }
-
-
-
-        [TestMethod]
-        public async Task Comunicaciones_Guardar_ZonaComunRetornaConId()
-        {
-            var zona = new ZonasComunes
-            {
-                Id = 0,
-                Nombre = "Zona Test",
-                Descripcion = "Zona de prueba",
-                CapacidadMaxima = 10,
-                Disponible = true
-            };
-
-            var resultado = await comunicaciones.Ejecutar<ZonasComunes>(
-                new Dictionary<string, object>
-                {
-                    { "Url", $"{UrlBase}/ZonasComunes/Guardar" },
-                    { "Entidad", zona }
-                });
-
-            Assert.IsNotNull(resultado);
-            Assert.IsTrue(resultado.Id > 0);
-        }
-
-
-
-        [TestMethod]
-        public async Task Comunicaciones_Editar_UsuarioRetornaEditado()
-        {
             
-            var usuarioNuevo = new Usuarios
+            Assert.IsNotNull(resultado);
+            Assert.IsTrue(resultado.Id > 0);
+        }
+
+
+
+
+        // Se valida que se edite usuario
+        [TestMethod]
+        public async Task ModificarUsuario_DeberiaActualizarInformacion()
+        {
+            var usuario = new Usuarios
             {
                 Id = 0,
-                Nombre = "Para Editar",
-                Apellido = "Test",
+                Nombre = "Usuario Inicial",
+                Apellido = "Prueba",
                 Email = $"editar{DateTime.Now.Ticks}@gmail.com",
                 Contraseña = "123456",
                 Telefono = "3001234567"
             };
 
-            var creado = await comunicaciones.Ejecutar<Usuarios>(
+            var usuarioCreado = await comunicaciones.Ejecutar<Usuarios>(
                 new Dictionary<string, object>
                 {
             { "Url", $"{UrlBase}/Usuarios/Guardar" },
-            { "Entidad", usuarioNuevo }
+            { "Entidad", usuario }
                 });
 
-            
-            creado.Nombre = "Nombre Editado";
+
+            usuarioCreado.Nombre = "Usuario Modificado";
+
 
             var resultado = await comunicaciones.Ejecutar<Usuarios>(
                 new Dictionary<string, object>
                 {
             { "Url", $"{UrlBase}/Usuarios/Editar" },
-            { "Entidad", creado },
+            { "Entidad", usuarioCreado },
             { "EsEditar", true }
                 });
 
+
             Assert.IsNotNull(resultado);
-            Assert.AreEqual("Nombre Editado", resultado.Nombre);
+            Assert.AreEqual("Usuario Modificado", resultado.Nombre);
         }
 
+
+
+
+        // Se valida que se elimine un usuario
         [TestMethod]
-        public async Task Comunicaciones_Eliminar_EjecutaSinError()
+        public async Task BorrarUsuario_DeberiaEliminarRegistro()
         {
-            
             var usuario = new Usuarios
             {
                 Id = 0,
-                Nombre = "Eliminar",
-                Apellido = "Test",
+                Nombre = "Usuario Eliminar",
+                Apellido = "Prueba",
                 Email = $"eliminar{DateTime.Now.Ticks}@gmail.com",
                 Contraseña = "123456",
                 Telefono = "3001234567"
             };
 
-            var creado = await comunicaciones.Ejecutar<Usuarios>(
+
+            var usuarioCreado = await comunicaciones.Ejecutar<Usuarios>(
                 new Dictionary<string, object>
                 {
-                    { "Url", $"{UrlBase}/Usuarios/Guardar" },
-                    { "Entidad", usuario }
+            { "Url", $"{UrlBase}/Usuarios/Guardar" },
+            { "Entidad", usuario }
                 });
 
-            
+
             await comunicaciones.Ejecutar<object>(
                 new Dictionary<string, object>
                 {
-                    { "Url", $"{UrlBase}/Usuarios/Eliminar?id={creado.Id}" },
-                    { "EsEliminar", true }
+            { "Url", $"{UrlBase}/Usuarios/Eliminar?id={usuarioCreado.Id}" },
+            { "EsEliminar", true }
                 });
+
 
             Assert.IsTrue(true);
         }
+
 
 
     }

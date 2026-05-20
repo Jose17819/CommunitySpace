@@ -7,29 +7,51 @@ namespace pre_Community_ASP.Pages
 {
     public class LoginModel : PageModel
     {
-
+        [BindProperty] public string? Email { get; set; }
+        [BindProperty] public string? Contraseña { get; set; }
         public string Error { get; set; } = "";
         private Comunicaciones comunicaciones = new Comunicaciones();
 
         public void OnGet()
         {
+            // Si ya hay sesión activa redirige directo
+            var session = HttpContext.Session.GetString("Usuario");
+            if (!string.IsNullOrEmpty(session))
+            {
+                var rol = HttpContext.Session.GetString("Rol");
+                if (rol == "Administrador")
+                    HttpContext.Response.Redirect("/Admin/Dashboard");
+                else
+                    HttpContext.Response.Redirect("/Residente/Dashboard");
+            }
         }
 
-
-        public async Task<IActionResult> OnPost(string Email, string Contrasena)
+        public async Task OnPostBtClean()
         {
+            Email = string.Empty;
+            Contraseña = string.Empty;
+        }
+
+        public async Task<IActionResult> OnPostBtEnter()
+        {
+
+
             try
             {
+                if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Contraseña))
+                {
+                    Error = "Por favor ingresa tu correo y contraseña";
+                    return Page();
+                }
 
-                // Buscar usuario por email
                 var usuarios = await comunicaciones.Ejecutar<List<Usuarios>>(
                     new Dictionary<string, object>
                     {
-                        { "Url", "https://localhost:7026/Usuarios/Consultar" }
+                        { "Url", "http://localhost:5124/Usuarios/Consultar" }
                     });
 
                 var usuario = usuarios?.FirstOrDefault(x =>
-                    x.Email == Email && x.Contraseña == Contrasena);
+                    x.Email == Email && x.Contraseña == Contraseña);
 
                 if (usuario == null)
                 {
@@ -37,25 +59,19 @@ namespace pre_Community_ASP.Pages
                     return Page();
                 }
 
-
-
-                // Guardar en sesión
-                HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+                // Guardar sesión — igual que el profesor
+                HttpContext.Session.SetString("Usuario", usuario.Email!);
                 HttpContext.Session.SetString("UsuarioNombre", usuario.Nombre!);
-                HttpContext.Session.SetString("UsuarioEmail", usuario.Email!);
+                HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
 
-
-
-                // Verificar si es administrador
+                // Verificar rol
                 var administradores = await comunicaciones.Ejecutar<List<Administradores>>(
                     new Dictionary<string, object>
                     {
-                        { "Url", "https://localhost:7026/Administradores/Consultar" }
+                        { "Url", "http://localhost:5124/Administradores/Consultar" }
                     });
 
-
                 var esAdmin = administradores?.Any(x => x.Usuario == usuario.Id);
-
 
                 if (esAdmin == true)
                 {
@@ -68,11 +84,12 @@ namespace pre_Community_ASP.Pages
                     return RedirectToPage("/Residente/Dashboard");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                Error = "Error al conectar con el servidor. Verifica que la API esté corriendo.";
+                Error = "Error al conectar con el servidor";
                 return Page();
             }
+
 
         }
     }
