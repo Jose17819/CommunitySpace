@@ -1,0 +1,188 @@
+﻿@page
+@model pre_Community_ASP.Pages.Residente.DashboardModel
+
+    ViewData["Title"] = "Dashboard Residente";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Bienvenida -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Bienvenido, @HttpContext.Session.GetString("UsuarioNombre") 👋</h2>
+            <p class="text-muted">Panel de residente — CommunitySpace</p>
+        </div>
+    </div>
+
+    <!-- Tarjetas resumen -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Mis Reservas</h5>
+                    <h2>@(Model.MisReservas?.Count ?? 0)</h2>
+                    <p class="card-text">Reservas activas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Zonas Disponibles</h5>
+                    <h2>@(Model.ZonasDisponibles?.Count ?? 0)</h2>
+                    <p class="card-text">Zonas para reservar</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Sanciones</h5>
+                    <h2>@(Model.MisSanciones?.Count ?? 0)</h2>
+                    <p class="card-text">Sanciones pendientes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Acciones</h5>
+                    <a href="/Residente/NuevaReserva" class="btn btn-light btn-sm mt-2">Nueva Reserva</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mis Reservas -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Mis Reservas</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.MisReservas == null || !Model.MisReservas.Any())
+                    {
+                        <p class="text-muted">No tienes reservas aún.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Zona</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Estado</th>
+                                    <th>Tiene Costo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var reserva in Model.MisReservas)
+                                {
+                                    <tr>
+                                        <td>@reserva.Id</td>
+                                        <td>@(reserva._ZonasComunes?.Nombre ?? $"Zona #{reserva.ZonaComun}")</td>
+                                        <td>@reserva.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@reserva.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            <span class="badge bg-@(reserva.EstadoReserva == 1 ? "success" : reserva.EstadoReserva == 2 ? "danger" : "warning")">
+                                                @(reserva._EstadoReservas?.Nombre ?? $"Estado #{reserva.EstadoReserva}")
+                                            </span>
+                                        </td>
+                                        <td>@(reserva.TieneCosto ? "Sí" : "No")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zonas Disponibles -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Zonas Comunes Disponibles</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.ZonasDisponibles == null || !Model.ZonasDisponibles.Any())
+                    {
+                        <p class="text-muted">No hay zonas disponibles en este momento.</p>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            @foreach (var zona in Model.ZonasDisponibles)
+                            {
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-success">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@zona.Nombre</h5>
+                                            <p class="card-text text-muted">@zona.Descripcion</p>
+                                            <p><strong>Capacidad:</strong> @zona.CapacidadMaxima personas</p>
+                                            <a href="/Residente/NuevaReserva?zonaId=@zona.Id"
+                                               class="btn btn-success btn-sm">Reservar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sanciones -->
+    @if (Model.MisSanciones != null && Model.MisSanciones.Any())
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Mis Sanciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Motivo</th>
+                                    <th>Valor</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sancion in Model.MisSanciones)
+                                {
+                                    <tr>
+                                        <td>@sancion.Motivo</td>
+                                        <td>$@sancion.Valor.ToString("N0")</td>
+                                        <td>@sancion.FechaSancion.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <span class="badge bg-@(sancion.Pagada ? "success" : "danger")">
+                                                @(sancion.Pagada ? "Pagada" : "Pendiente")
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Botón cerrar sesión -->
+    <div class="row">
+        <div class="col-12 text-end">
+            <a href="/Login" class="btn btn-outline-danger">Cerrar Sesión</a>
+        </div>
+    </div>
+
+</div>
