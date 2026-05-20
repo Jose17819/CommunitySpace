@@ -6,6 +6,7 @@ namespace ASP_Servicios.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
+
     public class AdministradoresController : ControllerBase
     {
         private AdministradoresAplicacion iAdministradoresAplicacion;

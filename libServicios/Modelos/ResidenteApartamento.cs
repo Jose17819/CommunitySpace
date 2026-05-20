@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace libServicios.Modelos
 {
 
-    [Table("ResidenteApartamentos")]
+    [Table("ResidentesApartamentos")]
     public class ResidentesApartamentos
     {
         public int Id { get; set; }
