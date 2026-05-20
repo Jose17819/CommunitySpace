@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentaciones", "Presentac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pre_Community_ASP", "pre_Community_ASP\pre_Community_ASP.csproj", "{01C0ED9B-F1C3-4610-B792-F7D7DE7D7FA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "preServicios_lib", "preServicios_lib\preServicios_lib.csproj", "{E049A765-A7B3-4952-83A7-FD215CE22B4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{01C0ED9B-F1C3-4610-B792-F7D7DE7D7FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01C0ED9B-F1C3-4610-B792-F7D7DE7D7FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01C0ED9B-F1C3-4610-B792-F7D7DE7D7FA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E049A765-A7B3-4952-83A7-FD215CE22B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E049A765-A7B3-4952-83A7-FD215CE22B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E049A765-A7B3-4952-83A7-FD215CE22B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E049A765-A7B3-4952-83A7-FD215CE22B4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{3BB5F88E-0294-43B2-A728-EDE9530430BA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F71C6B18-4D11-4047-83F6-F934CC065BA0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{01C0ED9B-F1C3-4610-B792-F7D7DE7D7FA3} = {06353B6E-EBA1-434F-B99C-0E54A7025BD3}
+		{E049A765-A7B3-4952-83A7-FD215CE22B4E} = {06353B6E-EBA1-434F-B99C-0E54A7025BD3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A3ECD1C8-C309-4B94-AC29-301930AC6F18}
