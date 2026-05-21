@@ -1,188 +1,587 @@
 ﻿@page
 @model pre_Community_ASP.Pages.Residente.DashboardModel
-
+@{
+    Layout = null;
     ViewData["Title"] = "Dashboard Residente";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Bienvenida -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2>Bienvenido, @HttpContext.Session.GetString("UsuarioNombre") 👋</h2>
-            <p class="text-muted">Panel de residente — CommunitySpace</p>
-        </div>
-    </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommunitySpace — Panel Residente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <!-- Tarjetas resumen -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body">
-                    <h5 class="card-title">Mis Reservas</h5>
-                    <h2>@(Model.MisReservas?.Count ?? 0)</h2>
-                    <p class="card-text">Reservas activas</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body">
-                    <h5 class="card-title">Zonas Disponibles</h5>
-                    <h2>@(Model.ZonasDisponibles?.Count ?? 0)</h2>
-                    <p class="card-text">Zonas para reservar</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-danger">
-                <div class="card-body">
-                    <h5 class="card-title">Sanciones</h5>
-                    <h2>@(Model.MisSanciones?.Count ?? 0)</h2>
-                    <p class="card-text">Sanciones pendientes</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body">
-                    <h5 class="card-title">Acciones</h5>
-                    <a href="/Residente/NuevaReserva" class="btn btn-light btn-sm mt-2">Nueva Reserva</a>
-                </div>
-            </div>
-        </div>
-    </div>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #000000, #0a0a1a, #0f1a3d);
+            min-height: 100vh;
+            color: white;
+        }
 
-    <!-- Mis Reservas -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Mis Reservas</h5>
+
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 40px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .navbar-brand img {
+                width: 45px;
+                filter: drop-shadow(0 0 10px rgba(59,130,246,0.5));
+            }
+
+            .navbar-brand span {
+                font-size: 20px;
+                font-weight: 700;
+                color: white;
+            }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .navbar-user span {
+                color: rgba(255,255,255,0.7);
+                font-size: 14px;
+            }
+
+        .btn-cerrar {
+            padding: 8px 20px;
+            background: rgba(220,38,38,0.2);
+            border: 1px solid rgba(220,38,38,0.4);
+            color: #fca5a5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+            .btn-cerrar:hover {
+                background: rgba(220,38,38,0.4);
+                transform: translateY(-1px);
+            }
+
+
+
+
+        /* CONTENIDO */
+        .content {
+            padding: 35px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* BIENVENIDA */
+        .welcome {
+            margin-bottom: 35px;
+        }
+
+            .welcome h1 {
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+
+            .welcome p {
+                color: rgba(255,255,255,0.5);
+                font-size: 15px;
+            }
+
+            .welcome span {
+                color: #3b82f6;
+            }
+
+        /* TARJETAS RESUMEN */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .card-stat {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+            .card-stat:hover {
+                transform: translateY(-3px);
+                border-color: rgba(59,130,246,0.4);
+                box-shadow: 0 10px 30px rgba(59,130,246,0.1);
+            }
+
+            .card-stat .icon {
+                font-size: 28px;
+                margin-bottom: 12px;
+            }
+
+            .card-stat .numero {
+                font-size: 36px;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+
+            .card-stat .label {
+                color: rgba(255,255,255,0.5);
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+        .card-blue {
+            border-left: 3px solid #3b82f6;
+        }
+
+        .card-green {
+            border-left: 3px solid #22c55e;
+        }
+
+        .card-red {
+            border-left: 3px solid #ef4444;
+        }
+
+        .card-yellow {
+            border-left: 3px solid #eab308;
+        }
+
+        .numero-blue {
+            color: #3b82f6;
+        }
+
+        .numero-green {
+            color: #22c55e;
+        }
+
+        .numero-red {
+            color: #ef4444;
+        }
+
+        .numero-yellow {
+            color: #eab308;
+        }
+
+
+
+
+        /* SECCIONES */
+        .section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 18px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .section-header h3 {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+        .section-body {
+            padding: 25px;
+        }
+
+
+
+
+        /* TABLA */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        thead th {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.2s;
+        }
+
+            tbody tr:hover {
+                background: rgba(255,255,255,0.03);
+            }
+
+        tbody td {
+            padding: 14px 15px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-blue {
+            background: rgba(59,130,246,0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        .badge-green {
+            background: rgba(34,197,94,0.2);
+            color: #86efac;
+            border: 1px solid rgba(34,197,94,0.3);
+        }
+
+        .badge-red {
+            background: rgba(239,68,68,0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        .badge-yellow {
+            background: rgba(234,179,8,0.2);
+            color: #fde047;
+            border: 1px solid rgba(234,179,8,0.3);
+        }
+
+        .empty-msg {
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+
+
+
+        /* ZONAS */
+        .zonas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .zona-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+            .zona-card:hover {
+                border-color: rgba(59,130,246,0.4);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(59,130,246,0.1);
+            }
+
+            .zona-card h4 {
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+
+            .zona-card p {
+                color: rgba(255,255,255,0.4);
+                font-size: 13px;
+                margin-bottom: 12px;
+            }
+
+            .zona-card .capacidad {
+                font-size: 13px;
+                color: rgba(255,255,255,0.6);
+                margin-bottom: 15px;
+            }
+
+                .zona-card .capacidad span {
+                    color: #3b82f6;
+                    font-weight: 600;
+                }
+
+        .btn-reservar {
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+            .btn-reservar:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 5px 15px rgba(59,130,246,0.4);
+            }
+
+        @@media (max-width: 900px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .zonas-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+        }
+
+        @@media (max-width: 500px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .zonas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+
+
+    <!--NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="/images/LogoCommunitySpace.png" alt="Logo" />
+            <span>CommunitySpace</span>
+        </div>
+        <div class="navbar-user">
+            <span>👤 @HttpContext.Session.GetString("UsuarioNombre")</span>
+            <form method="post" style="margin:0">
+                <button type="submit" asp-page-handler="BtClose" class="btn-cerrar">
+                    Cerrar Sesión
+                </button>
+            </form>
+        </div>
+    </nav>
+
+
+
+    <!-- CONTENIDO -->
+    <div class="content">
+
+
+
+        <!-- BIENVENIDA -->
+        <div class="welcome">
+            <h1>Bienvenido, <span>@HttpContext.Session.GetString("UsuarioNombre")</span></h1>
+            <p>Residente — CommunitySpace</p>
+        </div>
+
+
+
+        <!-- TARJETAS RESUMEN -->
+        <div class="cards-grid">
+            <div class="card-stat card-blue">
+                <div class="icon">📋</div>
+                <div class="numero numero-blue">@(Model.MisReservas?.Count ?? 0)</div>
+                <div class="label">Mis Reservas</div>
+            </div>
+            <div class="card-stat card-green">
+                <div class="icon">🏢</div>
+                <div class="numero numero-green">@(Model.ZonasDisponibles?.Count ?? 0)</div>
+                <div class="label">Zonas Disponibles</div>
+            </div>
+            <div class="card-stat card-red">
+                <div class="icon">⚠️</div>
+                <div class="numero numero-red">@(Model.MisSanciones?.Count ?? 0)</div>
+                <div class="label">Sanciones</div>
+            </div>
+            <div class="card-stat card-yellow">
+                <div class="icon">⚡</div>
+                <div class="numero numero-yellow">
+                    <a href="/Residente/NuevaReserva" class="btn-reservar">
+                        Nueva Reserva
+                    </a>
                 </div>
-                <div class="card-body">
-                    @if (Model.MisReservas == null || !Model.MisReservas.Any())
-                    {
-                        <p class="text-muted">No tienes reservas aún.</p>
-                    }
-                    else
-                    {
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Zona</th>
-                                    <th>Fecha Inicio</th>
-                                    <th>Fecha Fin</th>
-                                    <th>Estado</th>
-                                    <th>Tiene Costo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var reserva in Model.MisReservas)
-                                {
-                                    <tr>
-                                        <td>@reserva.Id</td>
-                                        <td>@(reserva._ZonasComunes?.Nombre ?? $"Zona #{reserva.ZonaComun}")</td>
-                                        <td>@reserva.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
-                                        <td>@reserva.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
-                                        <td>
-                                            <span class="badge bg-@(reserva.EstadoReserva == 1 ? "success" : reserva.EstadoReserva == 2 ? "danger" : "warning")">
-                                                @(reserva._EstadoReservas?.Nombre ?? $"Estado #{reserva.EstadoReserva}")
-                                            </span>
-                                        </td>
-                                        <td>@(reserva.TieneCosto ? "Sí" : "No")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                </div>
+                <div class="label">Acciones</div>
             </div>
         </div>
-    </div>
 
-    <!-- Zonas Disponibles -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Zonas Comunes Disponibles</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.ZonasDisponibles == null || !Model.ZonasDisponibles.Any())
-                    {
-                        <p class="text-muted">No hay zonas disponibles en este momento.</p>
-                    }
-                    else
-                    {
-                        <div class="row">
-                            @foreach (var zona in Model.ZonasDisponibles)
+
+
+        <!-- MIS RESERVAS -->
+        <div class="section">
+            <div class="section-header">
+                <span>📋</span>
+                <h3>Mis Reservas</h3>
+            </div>
+            <div class="section-body">
+                @if (Model.MisReservas == null || !Model.MisReservas.Any())
+                {
+                    <p class="empty-msg">No tienes reservas aún.</p>
+                }
+                else
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Zona</th>
+                                <th>Fecha de Inicio</th>
+                                <th>Fecha de Finalizacion</th>
+                                <th>Estado</th>
+                                <th>Tiene Costo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reserva in Model.MisReservas)
                             {
-                                <div class="col-md-4 mb-3">
-                                    <div class="card border-success">
-                                        <div class="card-body">
-                                            <h5 class="card-title">@zona.Nombre</h5>
-                                            <p class="card-text text-muted">@zona.Descripcion</p>
-                                            <p><strong>Capacidad:</strong> @zona.CapacidadMaxima personas</p>
-                                            <a href="/Residente/NuevaReserva?zonaId=@zona.Id"
-                                               class="btn btn-success btn-sm">Reservar</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sanciones -->
-    @if (Model.MisSanciones != null && Model.MisSanciones.Any())
-    {
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="mb-0">Mis Sanciones</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
                                 <tr>
-                                    <th>Motivo</th>
-                                    <th>Valor</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
+                                    <td>@reserva.Id</td>
+                                    <td>@(reserva._ZonasComunes?.Nombre ?? $"Zona #{reserva.ZonaComun}")</td>
+                                    <td>@reserva.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@reserva.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        <span class="badge badge-blue">
+                                            @(reserva._EstadoReservas?.Nombre ?? $"Estado #{reserva.EstadoReserva}")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(reserva.TieneCosto ? "badge-yellow" : "badge-green")">
+                                            @(reserva.TieneCosto ? "Sí" : "No")
+                                        </span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var sancion in Model.MisSanciones)
-                                {
-                                    <tr>
-                                        <td>@sancion.Motivo</td>
-                                        <td>$@sancion.Valor.ToString("N0")</td>
-                                        <td>@sancion.FechaSancion.ToString("dd/MM/yyyy")</td>
-                                        <td>
-                                            <span class="badge bg-@(sancion.Pagada ? "success" : "danger")">
-                                                @(sancion.Pagada ? "Pagada" : "Pendiente")
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            }
+                        </tbody>
+                    </table>
+                }
             </div>
         </div>
-    }
 
-    <!-- Botón cerrar sesión -->
-    <div class="row">
-        <div class="col-12 text-end">
-            <a href="/Login" class="btn btn-outline-danger">Cerrar Sesión</a>
+
+
+
+        <!-- ZONAS DISPONIBLES -->
+        <div class="section">
+            <div class="section-header">
+                <span>🏢</span>
+                <h3>Zonas Comunes Disponibles</h3>
+            </div>
+            <div class="section-body">
+                @if (Model.ZonasDisponibles == null || !Model.ZonasDisponibles.Any())
+                {
+                    <p class="empty-msg">No hay zonas disponibles en este momento.</p>
+                }
+                else
+                {
+                    <div class="zonas-grid">
+                        @foreach (var zona in Model.ZonasDisponibles)
+                        {
+                            <div class="zona-card">
+                                <h4>@zona.Nombre</h4>
+                                <p>@zona.Descripcion</p>
+                                <div class="capacidad">
+                                    Capacidad: <span>@zona.CapacidadMaxima personas</span>
+                                </div>
+                                <a href="/Residente/NuevaReserva?zonaId=@zona.Id" class="btn-reservar">
+                                    Reservar
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
+
+
+
+
+        <!-- SANCIONES -->
+        @if (Model.MisSanciones != null && Model.MisSanciones.Any())
+        {
+            <div class="section">
+                <div class="section-header">
+                    <span>⚠️</span>
+                    <h3>Mis Sanciones</h3>
+                </div>
+                <div class="section-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Motivo</th>
+                                <th>Valor</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var sancion in Model.MisSanciones)
+                            {
+                                <tr>
+                                    <td>@sancion.Motivo</td>
+                                    <td>$@sancion.Valor.ToString("N0")</td>
+                                    <td>@sancion.FechaSancion.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <span class="badge @(sancion.Pagada ? "badge-green" : "badge-red")">
+                                            @(sancion.Pagada ? "Pagada" : "Pendiente")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+
+
     </div>
 
-</div>
+</body>
+</html>

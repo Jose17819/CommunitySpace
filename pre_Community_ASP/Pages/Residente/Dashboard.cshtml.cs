@@ -7,14 +7,21 @@ namespace pre_Community_ASP.Pages.Residente
 {
     public class DashboardModel : PageModel
     {
+
+
         private Comunicaciones comunicaciones = new Comunicaciones();
         private string UrlBase = "http://localhost:5124";
+
+
 
         public Usuarios? Usuario { get; set; }
         public List<Reservas>? MisReservas { get; set; }
         public List<ZonasComunes>? ZonasDisponibles { get; set; }
         public List<Sanciones>? MisSanciones { get; set; }
         public List<Pagos>? MisPagos { get; set; }
+
+
+
 
         public async Task<IActionResult> OnGet()
         {
@@ -26,12 +33,16 @@ namespace pre_Community_ASP.Pages.Residente
 
             try
             {
+
+
                 // Cargar zonas disponibles
                 ZonasDisponibles = await comunicaciones.Ejecutar<List<ZonasComunes>>(
                     new Dictionary<string, object>
                     {
                         { "Url", $"{UrlBase}/ZonasComunes/ConsultarDisponibles" }
                     });
+
+
 
                 // Cargar reservas del residente
                 var residentes = await comunicaciones.Ejecutar<List<Residentes>>(
@@ -65,5 +76,13 @@ namespace pre_Community_ASP.Pages.Residente
 
             return Page();
         }
+
+
+        public IActionResult OnPostBtClose()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToPage("/Login");
+        }
+
     }
 }

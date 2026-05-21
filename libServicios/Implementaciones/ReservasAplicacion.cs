@@ -96,13 +96,22 @@ namespace libServicios.Implementaciones
 
 
 
-        public List<Reservas> ConsultarPorResidentes(int ResidentesId)
+        public List<Reservas> ConsultarPorResidentes(int residenteId)
         {
             this.iConexion = new Conexion();
             this.iConexion.string_conexion = Configuraciones.Obtener("string_conexion");
-            return this.iConexion.Reservas!
-                .Where(x => x.Residente == ResidentesId).ToList();
+            var lista = this.iConexion.Reservas!
+                .Where(x => x.Residente == residenteId).ToList();
+            foreach (var item in lista)
+            {
+                item._ZonasComunes = this.iConexion.ZonasComunes!
+                    .Where(x => x.Id == item.ZonaComun).FirstOrDefault();
+                item._EstadoReservas = this.iConexion.EstadoReservas!
+                    .Where(x => x.Id == item.EstadoReserva).FirstOrDefault();
+            }
+            return lista;
         }
+
 
 
         public List<Reservas> ConsultarPorZona(int ZonasComunesId)

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace libServicios.Modelos
 {
 
-    [Table("EstadosReserva")]
     public class EstadoReservas
     {
         public int Id { get; set; }
